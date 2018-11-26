@@ -1,3 +1,4 @@
+# Note: this code is taken verbatim from the lecture DQN code from Udacity DRN nanodegree
 import numpy as np
 import random
 from collections import namedtuple, deque

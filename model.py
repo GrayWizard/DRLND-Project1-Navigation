@@ -1,3 +1,4 @@
+# Note: this code is heavily based on the lecture DQN code from Udacity DRN nanodegree
 import torch
 import torch.nn as nn
 import torch.nn.functional as F

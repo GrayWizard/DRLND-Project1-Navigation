@@ -1,16 +1,14 @@
 [//]: # (Image References)
 
-[image1]: https://user-images.githubusercontent.com/10624937/42135619-d90f2f28-7d12-11e8-8823-82b970a54d7e.gif "Trained Agent"
+[image1]: ./Figure_1.png "Rewards Plot"
 
 # Project 1: Navigation
 
 ### Introduction
 
-For this project, you will train an agent to navigate (and collect bananas!) in a large, square world.  
+The goal of the project is to train an agent to navigate (and collect bananas!) in a large, square world.  
 
-![Trained Agent][image1]
-
-A reward of +1 is provided for collecting a yellow banana, and a reward of -1 is provided for collecting a blue banana.  Thus, the goal of your agent is to collect as many yellow bananas as possible while avoiding blue bananas.  
+A reward of +1 is provided for collecting a yellow banana, and a reward of -1 is provided for collecting a blue banana.  Thus, the goal of the agent is to collect as many yellow bananas as possible while avoiding blue bananas.  
 
 The state space has 37 dimensions and contains the agent's velocity, along with ray-based perception of objects around agent's forward direction.  Given this information, the agent has to learn how to best select actions.  Four discrete actions are available, corresponding to:
 - **`0`** - move forward.
@@ -18,38 +16,47 @@ The state space has 37 dimensions and contains the agent's velocity, along with 
 - **`2`** - turn left.
 - **`3`** - turn right.
 
-The task is episodic, and in order to solve the environment, your agent must get an average score of +13 over 100 consecutive episodes.
+The task is episodic, and in order to solve the environment, the agent must get an average score of +13 over 100 consecutive episodes.
 
-### Getting Started
+### Solution
 
-1. Download the environment from one of the links below.  You need only select the environment that matches your operating system:
-    - Linux: [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Linux.zip)
-    - Mac OSX: [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana.app.zip)
-    - Windows (32-bit): [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Windows_x86.zip)
-    - Windows (64-bit): [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Windows_x86_64.zip)
-    
-    (_For Windows users_) Check out [this link](https://support.microsoft.com/en-us/help/827218/how-to-determine-whether-a-computer-is-running-a-32-bit-version-or-64) if you need help with determining if your computer is running a 32-bit version or 64-bit version of the Windows operating system.
+#### Approach
 
-    (_For AWS_) If you'd like to train the agent on AWS (and have not [enabled a virtual screen](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Training-on-Amazon-Web-Service.md)), then please use [this link](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Linux_NoVis.zip) to obtain the environment.
+My initial approach was to try a vanilla DQN learning algorithm described in Lectures 1-7 of Lesson 2. The training code (adapted from the lectures is contained in `train_agent.py` and the agent and network model in `dqn_agent.py` and `model.py` accordingly.
 
-2. Place the file in the DRLND GitHub repository, in the `p1_navigation/` folder, and unzip (or decompress) the file. 
+#### Neural Network Architecture
+The network is a simple 4-layer fully connected neural network (with ReLu activation) with 37 units in the input layer, 64 units in each of the hidden layers and 4 units in the output layer.
+
+#### Hyperparameters
+The initial approach used the following hyperparameters:
+
+DQN:
+- n_episodes (int): maximum number of training episodes: *2000*
+- max_t (int): maximum number of timesteps per episode: *1000*
+- eps_start (float): starting value of epsilon, for epsilon-greedy action selection: *1.0*
+- eps_end (float): minimum value of epsilon: *0.01*
+- eps_decay (float): multiplicative factor (per episode) for decreasing epsilon: *0.995*
+
+Agent:
+- BUFFER_SIZE = int(1e5)  # replay buffer size
+- BATCH_SIZE minibatch size: *64*
+- GAMMA: discount factor: *0.99*
+- TAU: for soft update of target parameters: *1e-3*
+- LR: learning rate: *5e-4*
+- UPDATE_EVERY: how often to update the network: *4*
+
+#### Results
+
+To my surprise the basic vanilla DQN with initial hyperparameters performed adequately and trained the agent to solve the environment with average score of +13 in 540 episodes.
+
+See the rewards plot below:
+![Rewards Plot][image1]
 
 ### Instructions
 
-Follow the instructions in `Navigation.ipynb` to get started with training your own agent!  
+The project requires the installation of the environment provided by Udacity; see the detailed instructions [here](https://classroom.udacity.com/nanodegrees/nd893/parts/6b0c03a7-6667-4fcf-a9ed-dd41a2f76485/modules/4eeb16ab-5ac5-47bf-974d-12784e9730d7/lessons/69bd42c6-b70e-4866-9764-9bfa8c03cdea/concepts/319dc918-bd2c-4d3b-80a5-063bb5f1905a). The following Python 3.5 libraries are required as well (if not provided by the Udacity DRLND environment): `unityagents`,`numpy`,`torch`,`matplotlib`.
 
-### (Optional) Challenge: Learning from Pixels
+After the enviromnent is set up and activated, run `python train_agent.py` to train the agent and `python demo_trained_agent.py` to see how the trained agent performs.
 
-After you have successfully completed the project, if you're looking for an additional challenge, you have come to the right place!  In the project, your agent learned from information such as its velocity, along with ray-based perception of objects around its forward direction.  A more challenging task would be to learn directly from pixels!
-
-To solve this harder task, you'll need to download a new Unity environment.  This environment is almost identical to the project environment, where the only difference is that the state is an 84 x 84 RGB image, corresponding to the agent's first-person view.  (**Note**: Udacity students should not submit a project with this new environment.)
-
-You need only select the environment that matches your operating system:
-- Linux: [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/VisualBanana_Linux.zip)
-- Mac OSX: [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/VisualBanana.app.zip)
-- Windows (32-bit): [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/VisualBanana_Windows_x86.zip)
-- Windows (64-bit): [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/VisualBanana_Windows_x86_64.zip)
-
-Then, place the file in the `p1_navigation/` folder in the DRLND GitHub repository, and unzip (or decompress) the file.  Next, open `Navigation_Pixels.ipynb` and follow the instructions to learn how to use the Python API to control the agent.
-
-(_For AWS_) If you'd like to train the agent on AWS, you must follow the instructions to [set up X Server](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Training-on-Amazon-Web-Service.md), and then download the environment for the **Linux** operating system above.
+### Future work
+As mentioned before, due to the simplicy of the environment, even a standard DQN seems to perform adequately. However, if we anted to experement further, a double DQN, Dueling DQN or even a Rainbow approach might be a way to go.
